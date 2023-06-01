@@ -31,4 +31,4 @@ MIT, but many sketches rely on other references and assets, so check their licen
 ## Reference
 - [ViteでWebGL、Three.jsを練習するための環境構築をしてみた（TypeScript）](https://zenn.dev/s_takashi/articles/d775669388fda7)
 - [Vite - Plugin API](https://vitejs.dev/guide/api-plugin.html)
-- [Vite - 静的サイトのデプロイ](https://ja.vitejs.dev/guide/static-deploy.html#github-pages)
+- [Vite - 静的サイトのデプロイ](https://ja.vitejs.dev/guide/static-deploy.html#github-pages)# try-on-clothes
