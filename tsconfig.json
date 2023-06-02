@@ -20,5 +20,5 @@
       "module-name": ["https://cdn.skypack.dev/three"]
     },
   },
-  "include": ["src"]
+  "include": ["."]
 }
