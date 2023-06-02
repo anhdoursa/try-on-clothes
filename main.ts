@@ -250,7 +250,7 @@ function loadGltfModel(){
         function ( gltf ){
             gltfModel = gltf.scene;
             gltfModel.name = "model-head";
-            // gltfModel.scale.set(0.2, 0.2, 0.2);
+            gltfModel.scale.set(20, 20, 20);
             gltfModel.position.set(0,0,0);
             //gltfModel.rotation.set(-Math.PI/2,0,0); 
 
