@@ -41,11 +41,11 @@ function init(){
     const gui = new GUI();
     guiObject = {
         flip: flipWebCam,
-        boxSize: 0.5,
-        size: 1,
-        scaleX: 1,
-        scaleY: 1,
-        scaleZ: 1,
+        boxSize: 8.5,
+        size: 17,
+        scaleX: 17,
+        scaleY: 17,
+        scaleZ: 17,
     };
     gui.add( guiObject, 'flip' );
     gui.add( guiObject, 'boxSize', 0, 100 );
@@ -320,7 +320,7 @@ async function getPose(){
 
 function updatePose(){
     if(poses && poses.length > 0){
-        //console.log(poses);
+        console.log('poses',poses);
         for(var i=0; i<poses.length; i++){
             for(var j=0; j<poses[i].keypoints3D.length; j++){
                 //keypoints3D: -1~1
