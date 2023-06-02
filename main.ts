@@ -1,11 +1,10 @@
 // @ts-nocheck
 import './style.css'
 
-import * as THREE from 'https://unpkg.com/three@v0.152.0/build/three.module.js';
-import { GLTFLoader } from 'https://unpkg.com/three@v0.152.0/examples/jsm/loaders/GLTFLoader';
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import GUI from 'https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm';
 import Stats from 'stats.js';
-
 import { map } from './utils/map'
 import { convertSizeTo3dView } from './utils/size-converter'
 
@@ -24,7 +23,7 @@ let clock:THREE.Clock, time:any;
 
 let gltfModel:THREE.Group;
 
-let modelInputSize = {width:640, height:480};
+let modelInputSize = {width: windowW, height: windowH};
 let sizeOnOrigin = {widthOnOrigin:0, heightOnOrigin:0};
 
 let detector, poses;
@@ -33,19 +32,20 @@ let nosePos = new THREE.Vector3(0, 0, 0);
 let leftFacePos = new THREE.Vector3(-1, 0, 0);
 let rightFacePos = new THREE.Vector3(1, 0, 0);
 let boxL, boxR, boxNose;
-
+const sizeModel = 5;
 window.addEventListener('load', init);
 
 function init(){
     // Create GUI
     const gui = new GUI();
+    
     guiObject = {
         flip: flipWebCam,
-        boxSize: 8.5,
-        size: 17,
-        scaleX: 17,
-        scaleY: 17,
-        scaleZ: 17,
+        boxSize: 0.5,
+        size: sizeModel,
+        scaleX: sizeModel,
+        scaleY: sizeModel,
+        scaleZ: sizeModel,
     };
     gui.add( guiObject, 'flip' );
     gui.add( guiObject, 'boxSize', 0, 100 );
@@ -102,12 +102,12 @@ function init(){
     // Init web camera
     webCam = document.createElement('video');
     //videoTex = new THREE.VideoTexture( webCam );
-    initWebCam(isCamFront, 640, 480);
+    initWebCam(isCamFront, modelInputSize.width, modelInputSize.height);
 
     // Create boxes as mark for face parts
     let boxSize = guiObject.boxSize;
     const geometryL = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
-    const materialL = new THREE.MeshPhongMaterial({color: new THREE.Color("rgb(250, 5, 5)")});
+    const materialL = new THREE.MeshPhongMaterial({color: new THREE.Color("rgb(5, 250, 5)")});
     boxL = new THREE.Mesh(geometryL, materialL);
     scene.add(boxL);
     const geometryR = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
@@ -115,7 +115,7 @@ function init(){
     boxR = new THREE.Mesh(geometryR, materialR);
     scene.add(boxR);
     const geometryN = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
-    const materialN = new THREE.MeshPhongMaterial({color: new THREE.Color("rgb(5, 250, 5)")});
+    const materialN = new THREE.MeshPhongMaterial({color: new THREE.Color("rgb(250, 5, 5)")});
     boxNose = new THREE.Mesh(geometryN, materialN);
     scene.add(boxNose);
 
@@ -215,7 +215,7 @@ function initWebCam(isFront, longSide, shortSide){
 
 function flipWebCam(){
     isCamFront = !isCamFront;
-    initWebCam(isCamFront, 640, 480);
+    initWebCam(isCamFront, modelInputSize.width, modelInputSize.height);
 }
 
 // function loadTexture(){
@@ -320,48 +320,54 @@ async function getPose(){
 
 function updatePose(){
     if(poses && poses.length > 0){
-        console.log('poses',poses);
-        for(var i=0; i<poses.length; i++){
-            for(var j=0; j<poses[i].keypoints3D.length; j++){
-                //keypoints3D: -1~1
-                let posX3D = poses[i].keypoints3D[j].x*-1;
-                let posY3D = poses[i].keypoints3D[j].y*-1;
-                let posZ3D = poses[i].keypoints3D[j].z*-1;
+        // console.log('poses',poses);
+        const kp = poses[0].keypoints
+        // console.log('kp', kp);
+        const nose = kp.find(k => k.name === 'nose')
+        // console.log('nose', nose);
+        
+        boxNose.position.set(nose.x, nose.y, nose.z);
+        // for(var i=0; i<poses.length; i++){
+        //     for(var j=0; j<poses[i].keypoints3D.length; j++){
+        //         //keypoints3D: -1~1
+        //         let posX3D = poses[i].keypoints3D[j].x*-1;
+        //         let posY3D = poses[i].keypoints3D[j].y*-1;
+        //         let posZ3D = poses[i].keypoints3D[j].z*-1;
 
-                //keypoints: 0~modelInputSize
-                let posX2D = modelInputSize.width-poses[i].keypoints[j].x;
-                let posY2D = modelInputSize.height-poses[i].keypoints[j].y;
+        //         //keypoints: 0~modelInputSize
+        //         let posX2D = modelInputSize.width-poses[i].keypoints[j].x;
+        //         let posY2D = modelInputSize.height-poses[i].keypoints[j].y;
 
-                let amp = 10;
-                if(j==0){ // 0: nose
-                    //console.log("pos3D:", poses[i].keypoints3D[j].x,poses[i].keypoints3D[j].y,poses[i].keypoints3D[j].z)
-                    //console.log("pos2D:",posX2D,posY2D)
+        //         let amp = 10;
+        //         if(j==0){ // 0: nose
+        //             //console.log("pos3D:", poses[i].keypoints3D[j].x,poses[i].keypoints3D[j].y,poses[i].keypoints3D[j].z)
+        //             //console.log("pos2D:",posX2D,posY2D)
 
-                    boxNose.position.set(posX3D*amp, posY3D*amp, posZ3D*amp);
-                    nosePos.set(posX3D, posY3D, posZ3D);
+        //             boxNose.position.set(posX3D, posY3D, posZ3D);
+        //             // nosePos.set(posX3D, posY3D, posZ3D);
 
-                    // Match the position of the nose in 2D with the position of the model in 3D space
-                    let x = map(posX2D , 0 , modelInputSize.width, -1, 1);
-                    let y = map(posY2D , 0 , modelInputSize.height, -1, 1);
-                    gltfModel.position.set(x * sizeOnOrigin.widthOnOrigin, y * sizeOnOrigin.heightOnOrigin, 0);
-                    nosePos2D.set(x * sizeOnOrigin.widthOnOrigin, y * sizeOnOrigin.heightOnOrigin, 0);
-                }else if(j==7){ // 7: left ear
-                    boxL.position.set(posX3D*amp, posY3D*amp, posZ3D*amp);
-                    leftFacePos.set(posX3D, posY3D, posZ3D);
-                }else if(j==8){ // 8: right ear
-                    boxR.position.set(posX3D*amp, posY3D*amp, posZ3D*amp);
-                    rightFacePos.set(posX3D, posY3D, posZ3D);
+        //             // Match the position of the nose in 2D with the position of the model in 3D space
+        //             let x = map(posX2D , 0 , modelInputSize.width, -1, 1);
+        //             let y = map(posY2D , 0 , modelInputSize.height, -1, 1);
+        //             gltfModel.position.set(x * sizeOnOrigin.widthOnOrigin/2, - y * sizeOnOrigin.heightOnOrigin/2, 0);
+        //             // nosePos2D.set(x * sizeOnOrigin.widthOnOrigin, y * sizeOnOrigin.heightOnOrigin, 0);
+        //         }else if(j==7){ // 7: left ear
+        //             boxL.position.set(posX3D*amp, posY3D*amp, posZ3D*amp);
+        //             leftFacePos.set(posX3D, posY3D, posZ3D);
+        //         }else if(j==8){ // 8: right ear
+        //             boxR.position.set(posX3D*amp, posY3D*amp, posZ3D*amp);
+        //             rightFacePos.set(posX3D, posY3D, posZ3D);
 
-                    // Set gltf direction
-                    const midpoint = new THREE.Vector3();
-                    midpoint.addVectors(leftFacePos, rightFacePos).multiplyScalar(0.5);
-                    let vecNose = nosePos.clone().sub(midpoint);
-                    vecNose.add(nosePos2D);
-                    //vecNose.normalize();
-                    gltfModel.lookAt(vecNose);
-                    //console.log("vec:",vecNose)
-                }
-            }
-        }
+        //             // Set gltf direction
+        //             // const midpoint = new THREE.Vector3();
+        //             // midpoint.addVectors(leftFacePos, rightFacePos).multiplyScalar(0.5);
+        //             // let vecNose = nosePos.clone().sub(midpoint);
+        //             // vecNose.add(nosePos2D);
+        //             //vecNose.normalize();
+        //             // gltfModel.lookAt(vecNose);
+        //             //console.log("vec:",vecNose)
+        //         }
+        //     }
+        // }
     }
 }
