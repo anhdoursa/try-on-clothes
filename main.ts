@@ -48,12 +48,12 @@ function init(){
         scaleZ: 1,
     };
     gui.add( guiObject, 'flip' );
-    gui.add( guiObject, 'boxSize', 0, 1 );
+    gui.add( guiObject, 'boxSize', 0, 100 );
     const folder = gui.addFolder( 'GLTF' );
-    folder.add( guiObject, 'size', 0, 5 );
-    folder.add( guiObject, 'scaleX', 0, 2 );
-    folder.add( guiObject, 'scaleY', 0, 2 );
-    folder.add( guiObject, 'scaleZ', 0, 2 );
+    folder.add( guiObject, 'size', 0, 200 );
+    folder.add( guiObject, 'scaleX', 0, 200 );
+    folder.add( guiObject, 'scaleY', 0, 200 );
+    folder.add( guiObject, 'scaleZ', 0, 200 );
 
     // Init clock
     clock = new THREE.Clock();
@@ -250,7 +250,7 @@ function loadGltfModel(){
         function ( gltf ){
             gltfModel = gltf.scene;
             gltfModel.name = "model-head";
-            gltfModel.scale.set(20, 20, 20);
+            // gltfModel.scale.set(20, 20, 20);
             gltfModel.position.set(0,0,0);
             //gltfModel.rotation.set(-Math.PI/2,0,0); 
 
