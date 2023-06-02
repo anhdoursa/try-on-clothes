@@ -343,8 +343,8 @@ function updatePose(){
                     // Match the position of the nose in 2D with the position of the model in 3D space
                     let x = map(posX2D , 0 , modelInputSize.width, -1, 1);
                     let y = map(posY2D , 0 , modelInputSize.height, -1, 1);
-                    gltfModel.position.set(x * sizeOnOrigin.widthOnOrigin / 2, y * sizeOnOrigin.heightOnOrigin / 2, 0);
-                    nosePos2D.set(x * sizeOnOrigin.widthOnOrigin / 2, y * sizeOnOrigin.heightOnOrigin / 2, 0);
+                    gltfModel.position.set(x * sizeOnOrigin.widthOnOrigin, y * sizeOnOrigin.heightOnOrigin, 0);
+                    nosePos2D.set(x * sizeOnOrigin.widthOnOrigin, y * sizeOnOrigin.heightOnOrigin, 0);
                 }else if(j==7){ // 7: left ear
                     boxL.position.set(posX3D*amp, posY3D*amp, posZ3D*amp);
                     leftFacePos.set(posX3D, posY3D, posZ3D);
